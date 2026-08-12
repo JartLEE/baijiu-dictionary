@@ -288,7 +288,446 @@
         <div class="stats-grid">
             <div class="stat-item">
                 <span class="stat-label">전체</span>
-                <span class="stat-count" id="count-total">0</span>
+                <span class="stat-count" id="cnt-total">0</span>
             </div>
             <div class="stat-item">
-                <span class="
+                <span class="stat-label">농향형</span>
+                <span class="stat-count" id="cnt-nong">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">장향형</span>
+                <span class="stat-count" id="cnt-jang">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">봉향형</span>
+                <span class="stat-count" id="cnt-bong">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">청향형</span>
+                <span class="stat-count" id="cnt-cheong">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">기타</span>
+                <span class="stat-count" id="cnt-etc">0</span>
+            </div>
+        </div>
+    </section>
+
+    <nav class="category-tabs">
+        <button class="tab-btn active" onclick="setCategory('전체')">전체</button>
+        <button class="tab-btn" onclick="setCategory('농향형')">농향형</button>
+        <button class="tab-btn" onclick="setCategory('봉향형')">봉향형</button>
+        <button class="tab-btn" onclick="setCategory('장향형')">장향형</button>
+        <button class="tab-btn" onclick="setCategory('청향형')">청향형</button>
+        <button class="tab-btn" onclick="setCategory('기타')">기타</button>
+    </nav>
+
+    <main class="liquor-list" id="liquorList"></main>
+
+    <footer>
+        <div class="footer-notice">
+            <p>※ 열람 시점에 따라 수록된 백주에 대한 정보에 일부 오류가 있을 수 있습니다.</p>
+            <p class="en">※ Depending on the time of viewing, there may be some inaccuracies in the information provided on the listed Baijiu.</p>
+        </div>
+    </footer>
+</div>
+
+<script>
+    const liquorData = [
+        {
+            name: "노주노교 국교 1573",
+            type: "농향형",
+            region: "사천성 루저우 (Luzhou)",
+            price: "중국 면세점 2,580위안",
+            dutyFree: "할인가 1,888위안",
+            tagType: "famous5",
+            tagText: "8대명주(5/5회 수상)",
+            desc: `1573년부터 연대 끊김 없이 사용되어 온 국보급 진흙 발효지에서 생산되는 노주노교의 최상위 백주입니다.`
+        },
+        {
+            name: "노주노교 백년",
+            type: "농향형",
+            region: "사천성 루저우 (Luzhou)",
+            price: "중국 면세점 358위안",
+            dutyFree: "할인가 288위안",
+            tagType: "none",
+            desc: `100년 이상 된 발효 가마 원주를 사용한 노주노교의 프리미엄 라인입니다.`
+        },
+        {
+            name: "랑주 랑패 흑마특",
+            type: "농향형",
+            region: "사천성 고린 (Gulin)",
+            price: "정가 320위안",
+            dutyFree: "할인가 280위안",
+            tagType: "none",
+            desc: `랑주에서 선보이는 대중적인 농향형 라인업입니다.`
+        },
+        {
+            name: "랑주 청화랑",
+            type: "장향형",
+            region: "사천성 고린 (Gulin)",
+            price: "중국 면세점 1,101위안",
+            dutyFree: "할인가 729위안",
+            tagType: "none",
+            desc: `천연 동굴에서 숙성되는 최고급 장향형 백주 중 하나입니다.`
+        },
+        {
+            name: "랑주 홍화랑 (10년/15년)",
+            type: "장향형",
+            region: "사천성 고린 (Gulin)",
+            price: "청화랑 대비 저렴함",
+            dutyFree: "중국 면세점 유통",
+            tagType: "none",
+            desc: `화려한 붉은 병이 특징인 랑주의 대표 장향형 백주입니다.`
+        },
+        {
+            name: "분주 42도",
+            type: "청향형",
+            region: "산서성 핑야오 (Pingyao)",
+            price: "중국 면세점 429위안",
+            dutyFree: "할인가 259위안",
+            tagType: "none",
+            desc: `청향형 백주의 대명사인 분주의 42도 대중 버전입니다.`
+        },
+        {
+            name: "분주 55도",
+            type: "청향형",
+            region: "산서성 핑야오 (Pingyao)",
+            price: "현지 유통",
+            dutyFree: "중국 면세점 유통",
+            tagType: "none",
+            desc: `깨끗한 청향을 강렬하게 느낄 수 있는 전통 도수 버전입니다.`
+        },
+        {
+            name: "분주 장미분주",
+            type: "기타",
+            region: "산서성 핑야오 (Pingyao)",
+            price: "중국 면세점 358위안",
+            dutyFree: "할인가 258위안",
+            tagType: "none",
+            desc: `분주 원주에 진짜 장미꽃 침출액을 더한 향긋한 백주입니다.`
+        },
+        {
+            name: "분주 청화 30년 (53도)",
+            type: "청향형",
+            region: "산서성 핑야오 (Pingyao)",
+            price: "중국 면세점 1,029위안",
+            dutyFree: "할인가 798위안",
+            tagType: "famous5",
+            tagText: "8대명주(5/5회 수상)",
+            desc: `최고급 프리미엄 청향형 백주의 정석 버전입니다.`
+        },
+        {
+            name: "분주 청화 30년 (48도)",
+            type: "청향형",
+            region: "산서성 핑야오 (Pingyao)",
+            price: "중국 면세점 817위안",
+            dutyFree: "할인가 599위안",
+            tagType: "none",
+            desc: `청화 30년의 품격을 유지하면서 도수 부담을 낮춘 제품입니다.`
+        },
+        {
+            name: "수정방 클래식 (Classic)",
+            type: "농향형",
+            region: "사천성 청두 (Chengdu)",
+            price: "약 220,000원 ~ 280,000원",
+            dutyFree: "약 $150 ~ $180",
+            tagType: "none",
+            desc: `600년 역사의 원대 양조장 유적 효모로 양조하는 최고급 백주입니다.`
+        },
+        {
+            name: "수정방 웰베이 (Wellbay)",
+            type: "농향형",
+            region: "사천성 청두 (Chengdu)",
+            price: "약 160,000원 ~ 200,000원",
+            dutyFree: "약 $110 ~ $130",
+            tagType: "none",
+            desc: `면세점 판매율이 높은 유명 수정방 라인업입니다.`
+        },
+        {
+            name: "양하대곡 (Yanghe Daqu)",
+            type: "농향형",
+            region: "강소성 숙천 (Suqian)",
+            price: "약 30,000원 ~ 50,000원",
+            dutyFree: "면세점 유통",
+            tagType: "candidate3",
+            tagText: "8대명주 후보(3/5회 수상)",
+            desc: `부드럽고 달콤한 '면유형' 농향 백주의 대표주자입니다.`
+        },
+        {
+            name: "양하대곡 해지람",
+            type: "농향형",
+            region: "강소성 숙천 (Suqian)",
+            price: "약 45,000원 ~ 60,000원",
+            dutyFree: "약 $30 ~ $40",
+            tagType: "none",
+            desc: `양하 브랜드의 입문용 블루 시리즈 백주입니다.`
+        },
+        {
+            name: "양하대곡 천지람",
+            type: "농향형",
+            region: "강소성 숙천 (Suqian)",
+            price: "약 80,000원 ~ 110,000원",
+            dutyFree: "약 $55 ~ $75",
+            tagType: "none",
+            desc: `해지람의 상위 단계 중급 라인업입니다.`
+        },
+        {
+            name: "양하대곡 몽지람 (M3 / M6 / M9)",
+            type: "농향형",
+            region: "강소성 숙천 (Suqian)",
+            price: "약 120,000원 ~ 450,000원 이상",
+            dutyFree: "약 $80 ~ $300 내외",
+            tagType: "none",
+            desc: `양하 시리즈 최상위 플래그십 프리미엄 라인입니다.`
+        },
+        {
+            name: "죽엽청주 (Zhuyeqing Jiu)",
+            type: "기타",
+            region: "산서성 핑야오 (Pingyao)",
+            price: "약 30,000원 ~ 60,000원",
+            dutyFree: "면세점 유통",
+            tagType: "none",
+            desc: `분주 원주에 대나무 잎과 약재를 넣어 만든 약선 백주입니다.`
+        },
+        {
+            name: "검남춘 (Jiannanchun)",
+            type: "농향형",
+            region: "사천성 면죽 (Mianzhu)",
+            price: "약 90,000원 ~ 140,000원",
+            dutyFree: "약 $60 ~ $90",
+            tagType: "candidate3",
+            tagText: "8대명주 후보(3/5회 수상)",
+            desc: `마오타이, 우량예와 함께 손꼽히는 유명 농향 명주입니다.`
+        },
+        {
+            name: "전흥대곡 (Quanxing Daqu)",
+            type: "농향형",
+            region: "사천성 청두 (Chengdu)",
+            price: "약 40,000원 ~ 80,000원",
+            dutyFree: "중국 현지 유통",
+            tagType: "candidate3",
+            tagText: "8대명주 후보(3/5회 수상)",
+            desc: `수정방의 뿌리가 되는 사천성의 전통 농향 명주입니다.`
+        },
+        {
+            name: "서봉주 (기본/주해/골드)",
+            type: "봉향형",
+            region: "섬서성 바오지 (Baoji)",
+            price: "약 40,000원 ~ 180,000원",
+            dutyFree: "약 $35 ~ $120",
+            tagType: "famous4",
+            tagText: "8대명주(4/5회 수상)",
+            desc: `독특한 봉향형(鳳香型) 백주의 대표이자 명주입니다.`
+        },
+        {
+            name: "귀주마오타이 (비천)",
+            type: "장향형",
+            region: "귀주성 마오타이진 (Moutai)",
+            price: "약 600,000원 ~ 800,000원 이상",
+            dutyFree: "약 $350 ~ $400",
+            tagType: "famous5",
+            tagText: "8대명주(5/5회 수상)",
+            desc: `중국을 대표하는 최고의 국주(國酒) 장향 백주입니다.`
+        },
+        {
+            name: "우량예 (오량액)",
+            type: "농향형",
+            region: "사천성 이빈 (Yibin)",
+            price: "약 280,000원 ~ 350,000원",
+            dutyFree: "약 $180 ~ $220",
+            tagType: "famous4",
+            tagText: "8대명주(4/5회 수상)",
+            desc: `5가지 곡식으로 양조한 농향형 백주의 명품입니다.`
+        },
+        {
+            name: "고정공주",
+            type: "농향형",
+            region: "안휘성 보저우 (Bozhou)",
+            price: "약 60,000원 ~ 150,000원",
+            dutyFree: "약 $50 ~ $100",
+            tagType: "famous4",
+            tagText: "8대명주(4/5회 수상)",
+            desc: `역사가 깊은 안휘성의 전통 명주입니다.`
+        },
+        {
+            name: "동주 (Dongjiu)",
+            type: "기타",
+            region: "귀주성 쭌이 (Zunyi)",
+            price: "약 80,000원 ~ 180,000원",
+            dutyFree: "현지 면세점 유통",
+            tagType: "famous4",
+            tagText: "8대명주(4/5회 수상)",
+            desc: `약향형 백주로 특유의 향을 가진 명주입니다.`
+        },
+        {
+            name: "공부가주 (일반 / 자약)",
+            type: "농향형",
+            region: "산동성 쿵푸 (Qufu)",
+            price: "15,000원 ~ 50,000원 대",
+            dutyFree: "면세점 미입점",
+            tagType: "none",
+            desc: `공자 가문의 전통 양조법에서 시작된 농향 백주입니다.`
+        },
+        {
+            name: "홍성 이과두주",
+            type: "청향형",
+            region: "베이징시 (Beijing)",
+            price: "약 5,000원 ~ 40,000원",
+            dutyFree: "면세점 미입점",
+            tagType: "none",
+            desc: `베이징을 대표하는 순수한 대중 청향 백주입니다.`
+        },
+        {
+            name: "연태고량주 (골드)",
+            type: "농향형",
+            region: "산동성 옌타이 (Yantai)",
+            price: "약 12,000원 ~ 25,000원",
+            dutyFree: "면세점 미입점",
+            tagType: "none",
+            desc: `한국에서 가장 유명하고 보편적인 인기 농향 백주입니다.`
+        }
+    ];
+
+    let currentCategory = '전체';
+
+    // 안전한 카운트 업데이트 함수
+    function updateCounts() {
+        let nongCount = 0;
+        let jangCount = 0;
+        let bongCount = 0;
+        let cheongCount = 0;
+        let etcCount = 0;
+
+        liquorData.forEach(item => {
+            const type = item.type || '';
+            if (type.includes('농향')) nongCount++;
+            else if (type.includes('장향')) jangCount++;
+            else if (type.includes('봉향')) bongCount++;
+            else if (type.includes('청향')) cheongCount++;
+            else etcCount++;
+        });
+
+        // HTML ID인 cnt- 시리즈와 안전하게 매칭
+        const elTotal = document.getElementById('cnt-total');
+        const elNong = document.getElementById('cnt-nong');
+        const elJang = document.getElementById('cnt-jang');
+        const elBong = document.getElementById('cnt-bong');
+        const elCheong = document.getElementById('cnt-cheong');
+        const elEtc = document.getElementById('cnt-etc');
+
+        if(elTotal) elTotal.innerText = liquorData.length;
+        if(elNong) elNong.innerText = nongCount;
+        if(elJang) elJang.innerText = jangCount;
+        if(elBong) elBong.innerText = bongCount;
+        if(elCheong) elCheong.innerText = cheongCount;
+        if(elEtc) elEtc.innerText = etcCount;
+    }
+
+    function renderList(data) {
+        const listContainer = document.getElementById('liquorList');
+        if(!listContainer) return;
+        
+        listContainer.innerHTML = '';
+
+        if (data.length === 0) {
+            listContainer.innerHTML = '<div style="text-align:center; color: var(--text-sub); padding: 30px 0;">검색 결과가 없습니다.</div>';
+            return;
+        }
+
+        data.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'liquor-card';
+            card.onclick = function() { this.classList.toggle('open'); };
+
+            let tagHtml = '';
+            if (item.tagType === 'famous5') {
+                tagHtml = `<div class="detail-info-item"><span class="info-label">비고:</span><span class="famous-tag-5">${item.tagText}</span></div>`;
+            } else if (item.tagType === 'famous4') {
+                tagHtml = `<div class="detail-info-item"><span class="info-label">비고:</span><span class="famous-tag-4">${item.tagText}</span></div>`;
+            } else if (item.tagType === 'candidate3') {
+                tagHtml = `<div class="detail-info-item"><span class="info-label">비고:</span><span class="candidate-tag-3">${item.tagText}</span></div>`;
+            }
+
+            card.innerHTML = `
+                <div class="liquor-card-header">
+                    <div class="liquor-info">
+                        <div class="liquor-name">${item.name}</div>
+                        <div class="liquor-meta">${item.region}</div>
+                    </div>
+                    <span class="badge">${item.type}</span>
+                </div>
+                <div class="liquor-detail">
+                    <div class="detail-desc">${item.desc}</div>
+                    <div class="detail-info-list">
+                        <div class="detail-info-item">
+                            <span class="info-label">지역:</span>
+                            <span>${item.region}</span>
+                        </div>
+                        <div class="detail-info-item">
+                            <span class="info-label">가격:</span>
+                            <span>${item.price} (${item.dutyFree})</span>
+                        </div>
+                        ${tagHtml}
+                    </div>
+                </div>
+            `;
+            listContainer.appendChild(card);
+        });
+    }
+
+    function filterList() {
+        const query = document.getElementById('searchInput').value.toLowerCase().trim();
+        
+        const filtered = liquorData.filter(item => {
+            const typeStr = item.type || '';
+            
+            let matchesCategory = false;
+            if (currentCategory === '전체') {
+                matchesCategory = true;
+            } else if (currentCategory === '기타') {
+                matchesCategory = !typeStr.includes('농향') && !typeStr.includes('장향') && !typeStr.includes('봉향') && !typeStr.includes('청향');
+            } else {
+                matchesCategory = typeStr.includes(currentCategory.replace('형', ''));
+            }
+
+            const matchesSearch = item.name.toLowerCase().includes(query) ||
+                                  typeStr.toLowerCase().includes(query) ||
+                                  item.region.toLowerCase().includes(query) ||
+                                  item.desc.toLowerCase().includes(query);
+
+            return matchesCategory && matchesSearch;
+        });
+
+        renderList(filtered);
+    }
+
+    function setCategory(category) {
+        currentCategory = category;
+        
+        const buttons = document.querySelectorAll('.tab-btn');
+        buttons.forEach(btn => {
+            if (btn.innerText.trim() === category) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        filterList();
+    }
+
+    function resetFilter() {
+        document.getElementById('searchInput').value = '';
+        setCategory('전체');
+    }
+
+    // 문서가 준비되었을 때 안전하게 실행
+    document.addEventListener("DOMContentLoaded", function() {
+        updateCounts();
+        renderList(liquorData);
+    });
+</script>
+
+</body>
+</html>
