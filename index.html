@@ -110,10 +110,17 @@
             color: var(--primary-color);
         }
 
+        /* 탭 레이아웃 수정: 2줄 구조 */
+        .category-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 0 16px 16px 16px;
+        }
+
         .category-tabs {
             display: flex;
             gap: 8px;
-            padding: 0 16px 16px 16px;
             overflow-x: auto;
             white-space: nowrap;
             scrollbar-width: none;
@@ -121,6 +128,10 @@
 
         .category-tabs::-webkit-scrollbar {
             display: none;
+        }
+
+        .category-tabs.sub-line {
+            padding-top: 2px;
         }
 
         .tab-btn {
@@ -313,15 +324,19 @@
         </div>
     </section>
 
-    <nav class="category-tabs">
-        <button class="tab-btn active" onclick="setCategory('전체')">전체</button>
-        <button class="tab-btn" onclick="setCategory('중국 8대명주')">중국 8대명주</button>
-        <button class="tab-btn" onclick="setCategory('농향형')">농향형</button>
-        <button class="tab-btn" onclick="setCategory('봉향형')">봉향형</button>
-        <button class="tab-btn" onclick="setCategory('장향형')">장향형</button>
-        <button class="tab-btn" onclick="setCategory('청향형')">청향형</button>
-        <button class="tab-btn" onclick="setCategory('기타')">기타</button>
-    </nav>
+    <div class="category-wrapper">
+        <nav class="category-tabs">
+            <button class="tab-btn active" onclick="setCategory('전체')">전체</button>
+            <button class="tab-btn" onclick="setCategory('농향형')">농향형</button>
+            <button class="tab-btn" onclick="setCategory('봉향형')">봉향형</button>
+            <button class="tab-btn" onclick="setCategory('장향형')">장향형</button>
+            <button class="tab-btn" onclick="setCategory('청향형')">청향형</button>
+            <button class="tab-btn" onclick="setCategory('기타')">기타</button>
+        </nav>
+        <nav class="category-tabs sub-line">
+            <button class="tab-btn" onclick="setCategory('중국 8대명주')">중국 8대명주</button>
+        </nav>
+    </div>
 
     <main class="liquor-list" id="liquorList"></main>
 
@@ -549,7 +564,6 @@
             dutyFree: "약 $50 ~ $100",
             tagType: "famous4",
             tagText: "8대명주(4/5회 수상)",
-            /* 1. 조조 관련 설명 반영 */
             desc: `삼국지의 조조(曹操)가 고향인 안휘성 보저우의 양조법으로 만든 술인 '구운춘주'를 한나라 헌제에게 진상한 것에서 유래한 궁중 공진주입니다.`
         },
         {
@@ -685,7 +699,6 @@
             let matchesCategory = false;
             if (currentCategory === '전체') {
                 matchesCategory = true;
-            /* 2. '중국 8대명주' 탭 선택 시 수상작(5/4회) 및 후보(3회) 10개만 필터링 */
             } else if (currentCategory === '중국 8대명주') {
                 matchesCategory = item.tagType === 'famous5' || item.tagType === 'famous4' || item.tagType === 'candidate3';
             } else if (currentCategory === '기타') {
