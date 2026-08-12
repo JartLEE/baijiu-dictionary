@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>주류 백과사전 - 백주</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --primary-color: #c8102e; /* 백주에 어울리는 강렬한 붉은 톤 */
+            --text-main: #212529;
+            --text-sub: #6c757d;
+            --border-color: #e9ecef;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+        }
+
+        /* 모바일 최적화 컨테이너 */
+        .mobile-container {
+            width: 100%;
+            max-width: 480px; /* 모바일 프레임 너비 */
+            background-color: #fff;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+            padding-bottom: 40px;
+        }
+
+        /* 고정 상단 헤더 */
+        header {
+            position: sticky;
+            top: 0;
+            background-color: #fff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 16px;
+            z-index: 100;
+        }
+
+        .home-banner {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--text-main);
+            font-weight: bold;
+            font-size: 1.1rem;
+            width: fit-content;
+        }
+
+        .home-banner .icon {
+            font-size: 1.3rem;
+        }
+
+        /* 검색 영역 */
+        .search-section {
+            padding: 16px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            background-color: #f1f3f5;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            background-color: #fff;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.1);
+        }
+
+        /* 수록 통계 현황 */
+        .stats-section {
+            padding: 0 16px 16px 16px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            background-color: #f8f9fa;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-sub);
+        }
+
+        .stat-count {
+            font-size: 0.95rem;
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        /* 카테고리 탭 (가로 스크롤 가능) */
+        .category-tabs {
+            display: flex;
+            gap: 8px;
+            padding: 0 16px 16px 16px;
+            overflow-x: auto;
+            white-space: nowrap;
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }
+
+        .category-tabs::-webkit-scrollbar {
+            display: none; /* Chrome, Safari, Opera */
+        }
+
+        .tab-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            background-color: #fff;
+            color: var(--text-sub);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .tab-btn.active {
+            background-color: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+            font-weight: bold;
+        }
+
+        /* 주류 리스트 */
+        .liquor-list {
+            padding: 0 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .liquor-card {
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: var(--card-bg);
+        }
+
+        .liquor-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .liquor-name {
+            font-size: 1rem;
+            font-weight: bold;
+        }
+
+        .liquor-meta {
+            font-size: 0.8rem;
+            color: var(--text-sub);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            background-color: #fff0f3;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+
+<div class="mobile-container">
+    <header>
+        <a href="#" class="home-banner" onclick="resetFilter()">
+            <span class="icon">🍶</span>
+            <span>주류 백과사전</span>
+        </a>
+    </header>
+
+    <section class="search-section">
+        <input type="text" id="searchInput" class="search-input" placeholder="이름, 향, 지역으로 검색 (예: 농향, 노주노교, 서안)" onkeyup="filterList()">
+    </section>
+
+    <section class="stats-section">
+        <div class="stats-grid">
+            <div class="stat-item">
+                <span class="stat-label">전체</span>
+                <span class="stat-count" id="count-total">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">농향형</span>
+                <span class="stat-count" id="count-nong">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">장향형</span>
+                <span class="stat-count" id="count-jang">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">봉향형</span>
+                <span class="stat-count" id="count-bong">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">청향형</span>
+                <span class="stat-count" id="count-cheong">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">기타</span>
+                <span class="stat-count" id="count-etc">0</span>
+            </div>
+        </div>
+    </section>
+
+    <nav class="category-tabs">
+        <button class="tab-btn active" onclick="setCategory('전체')">전체</button>
+        <button class="tab-btn" onclick="setCategory('농향형')">농향형</button>
+        <button class="tab-btn" onclick="setCategory('봉향형')">봉향형</button>
+        <button class="tab-btn" onclick="setCategory('장향형')">장향형</button>
+        <button class="tab-btn" onclick="setCategory('청향형')">청향형</button>
+        <button class="tab-btn" onclick="setCategory('기타')">기타</button>
+    </nav>
+
+    <main class="liquor-list" id="liquorList">
+        </main>
+</div>
+
+<script>
+    // 샘플 백주 데이터 (필요에 따라 자유롭게 추가/수정 가능)
+    const liquorData = [
+        { name: "노주노교 특곡", type: "농향형", region: "사천성 루저우" },
+        { name: "귀주마오타이", type: "장향형", region: "귀주성 마오타이진" },
+        { name: "분주 (분주 10년)", type: "청향형", region: "산서성 핑야오" },
+        { name: "서봉주", type: "봉향형", region: "섬서성 보지 (서안 인근)" },
+        { name: "오량액", type: "농향형", region: "사천성 이빈" },
+        { name: "동주", type: "기타", region: "귀주성 쭌이" }
+    ];
+
+    let currentCategory = '전체';
+
+    // 카운터 업데이트
+    function updateCounts() {
+        document.getElementById('count-total').innerText = liquorData.length;
+        document.getElementById('count-nong').innerText = liquorData.filter(item => item.type === '농향형').length;
+        document.getElementById('count-jang').innerText = liquorData.filter(item => item.type === '장향형').length;
+        document.getElementById('count-bong').innerText = liquorData.filter(item => item.type === '봉향형').length;
+        document.getElementById('count-cheong').innerText = liquorData.filter(item => item.type === '청향형').length;
+        document.getElementById('count-etc').innerText = liquorData.filter(item => item.type === '기타').length;
+    }
+
+    // 리스트 렌더링
+    function renderList(data) {
+        const listContainer = document.getElementById('liquorList');
+        listContainer.innerHTML = '';
+
+        if (data.length === 0) {
+            listContainer.innerHTML = `<div style="text-align:center; color: var(--text-sub); padding: 30px 0;">검색 결과가 없습니다.</div>`;
+            return;
+        }
+
+        data.forEach(item => {
+            const card = document.createElement('div');
+            card.className = 'liquor-card';
+            card.innerHTML = `
+                <div class="liquor-info">
+                    <div class="liquor-name">${item.name}</div>
+                    <div class="liquor-meta">지역: ${item.region}</div>
+                </div>
+                <span class="badge">${item.type}</span>
+            `;
+            listContainer.appendChild(card);
+        });
+    }
+
+    // 필터링 처리 (검색어 + 탭)
+    function filterList() {
+        const query = document.getElementById('searchInput').value.toLowerCase();
+        
+        const filtered = liquorData.filter(item => {
+            const matchesCategory = (currentCategory === '전체') || (item.type === currentCategory);
+            const matchesSearch = item.name.toLowerCase().includes(query) ||
+                                  item.type.toLowerCase().includes(query) ||
+                                  item.region.toLowerCase().includes(query);
+            return matchesCategory && matchesSearch;
+        });
+
+        renderList(filtered);
+    }
+
+    // 카테고리 변경
+    function setCategory(category) {
+        currentCategory = category;
+        
+        // 버튼 활성화 스타일 변경
+        const buttons = document.querySelectorAll('.tab-btn');
+        buttons.forEach(btn => {
+            if (btn.innerText === category) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        filterList();
+    }
+
+    // 홈 배너 클릭 시 리셋
+    function resetFilter() {
+        document.getElementById('searchInput').value = '';
+        setCategory('전체');
+    }
+
+    // 초기화
+    window.onload = () => {
+        updateCounts();
+        renderList(liquorData);
+    };
+</script>
+
+</body>
+</html>
