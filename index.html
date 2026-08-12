@@ -315,6 +315,7 @@
 
     <nav class="category-tabs">
         <button class="tab-btn active" onclick="setCategory('전체')">전체</button>
+        <button class="tab-btn" onclick="setCategory('중국 8대명주')">중국 8대명주</button>
         <button class="tab-btn" onclick="setCategory('농향형')">농향형</button>
         <button class="tab-btn" onclick="setCategory('봉향형')">봉향형</button>
         <button class="tab-btn" onclick="setCategory('장향형')">장향형</button>
@@ -548,7 +549,8 @@
             dutyFree: "약 $50 ~ $100",
             tagType: "famous4",
             tagText: "8대명주(4/5회 수상)",
-            desc: `역사가 깊은 안휘성의 전통 명주입니다.`
+            /* 1. 조조 관련 설명 반영 */
+            desc: `삼국지의 조조(曹操)가 고향인 안휘성 보저우의 양조법으로 만든 술인 '구운춘주'를 한나라 헌제에게 진상한 것에서 유래한 궁중 공진주입니다.`
         },
         {
             name: "동주 (Dongjiu)",
@@ -591,7 +593,6 @@
 
     let currentCategory = '전체';
 
-    // 안전한 카운트 업데이트 함수
     function updateCounts() {
         let nongCount = 0;
         let jangCount = 0;
@@ -608,7 +609,6 @@
             else etcCount++;
         });
 
-        // HTML ID인 cnt- 시리즈와 안전하게 매칭
         const elTotal = document.getElementById('cnt-total');
         const elNong = document.getElementById('cnt-nong');
         const elJang = document.getElementById('cnt-jang');
@@ -685,6 +685,9 @@
             let matchesCategory = false;
             if (currentCategory === '전체') {
                 matchesCategory = true;
+            /* 2. '중국 8대명주' 탭 선택 시 수상작(5/4회) 및 후보(3회) 10개만 필터링 */
+            } else if (currentCategory === '중국 8대명주') {
+                matchesCategory = item.tagType === 'famous5' || item.tagType === 'famous4' || item.tagType === 'candidate3';
             } else if (currentCategory === '기타') {
                 matchesCategory = !typeStr.includes('농향') && !typeStr.includes('장향') && !typeStr.includes('봉향') && !typeStr.includes('청향');
             } else {
@@ -722,7 +725,6 @@
         setCategory('전체');
     }
 
-    // 문서가 준비되었을 때 안전하게 실행
     document.addEventListener("DOMContentLoaded", function() {
         updateCounts();
         renderList(liquorData);
